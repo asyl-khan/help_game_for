@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ойындар — Жады • Реакция • Есептер</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --card-hover: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --radius: 16px;
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background decoration */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(59,130,246,0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 70% 80%, rgba(139,92,246,0.12) 0%, transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Menu cards */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            box-shadow: var(--shadow);
+        }
+
+        .menu-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(59,130,246,0.4);
+        }
+
+        .menu-card .icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .menu-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .menu-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-secondary {
+            background: var(--card-hover);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--card-hover);
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+        }
+
+        .btn-back:hover {
+            border-color: var(--text-muted);
+            color: var(--text);
+        }
+
+        /* Game card */
+        .game-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-display {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+
+        .score-display span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ===== MEMORY 1: Colors ===== */
+        .color-seq {
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .color-chip {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .chip-red { background: #ef4444; }
+        .chip-blue { background: #3b82f6; }
+        .chip-green { background: #22c55e; }
+        .chip-yellow { background: #eab308; color: #1e293b; }
+
+        .color-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--card-hover);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1.1rem;
+            font-family: inherit;
+            text-align: center;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .color-input:focus {
+            border-color: var(--accent);
+        }
+
+        .color-input:disabled {
+            opacity: 0.5;
+        }
+
+        .color-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.15s, opacity 0.15s;
+        }
+
+        .color-btn:hover { transform: scale(1.03); }
+        .color-btn:active { transform: scale(0.97); }
+        .color-btn.red { background: #ef4444; }
+        .color-btn.blue { background: #3b82f6; }
+        .color-btn.green { background: #22c55e; }
+        .color-btn.yellow { background: #eab308; color: #1e293b; }
+
+        .feedback {
+            text-align: center;
+            min-height: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback.ok { color: var(--success); }
+        .feedback.err { color: var(--danger); }
+
+        /* ===== MEMORY 2: Cards ===== */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        .mem-card {
+            aspect-ratio: 1;
+            background: var(--card-hover);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .mem-card:hover:not(:disabled) {
+            background: #475569;
+            transform: scale(1.04);
+        }
+
+        .mem-card.flipped {
+            background: #334155;
+            cursor: default;
+        }
+
+        .mem-card.matched {
+            background: rgba(34,197,94,0.2);
+            border: 2px solid var(--success);
+            cursor: default;
+        }
+
+        .mem-card:disabled {
+            cursor: default;
+        }
+
+        /* ===== REACTION 1 ===== */
+        .reaction-area {
+            text-align: center;
+        }
+
+        .reaction-btn {
+            width: 100%;
+            max-width: 280px;
+            height: 160px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .reaction-btn.idle { background: var(--accent); }
+        .reaction-btn.waiting { background: #ef4444; }
+        .reaction-btn.active { background: #22c55e; animation: pulse 0.6s infinite; }
+        .reaction-btn.penalty { background: #64748b; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .reaction-info {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== REACTION 2: Clicker ===== */
+        .clicker-area {
+            position: relative;
+            height: 360px;
+            background: var(--bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--card-hover);
+            margin-bottom: 16px;
+        }
+
+        .clicker-btn {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+            transition: transform 0.1s;
+            display: none;
+        }
+
+        .clicker-btn:active {
+            transform: scale(0.9);
+        }
+
+        .clicker-setup {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .clicker-setup input {
+            width: 100px;
+            padding: 10px;
+            border: 2px solid var(--card-hover);
+            border-radius: 10px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1.1rem;
+            text-align: center;
+            font-family: inherit;
+            outline: none;
+            margin: 8px 0 16px;
+        }
+
+        .clicker-setup input:focus {
+            border-color: var(--accent);
+        }
+
+        /* ===== MATH ===== */
+        .math-primer {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin: 24px 0;
+            letter-spacing: 2px;
+        }
+
+        .math-input {
+            width: 140px;
+            padding: 14px;
+            border: 2px solid var(--card-hover);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1.4rem;
+            text-align: center;
+            font-family: inherit;
+            outline: none;
+            display: block;
+            margin: 0 auto 16px;
+        }
+
+        .math-input:focus {
+            border-color: var(--accent);
+        }
+
+        .math-result {
+            text-align: center;
+            min-height: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        /* Utility */
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transform: scale(0.9);
+            transition: transform 0.25s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal .actions {
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.5rem; }
+            .memory-grid { gap: 8px; }
+            .mem-card { font-size: 1.4rem; }
+            .math-primer { font-size: 1.7rem; }
+            .reaction-btn { height: 130px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- MAIN MENU -->
+        <div id="screen-main" class="screen active">
+            <div class="header">
+                <h1>🧠 Ойындар жинағы</h1>
+                <p>Жады, реакция және есептер — миыңызды жаттықтырыңыз</p>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-card" onclick="showScreen('screen-memory-menu')">
+                    <span class="icon">🧩</span>
+                    <h3>Жады ойындары</h3>
+                    <p>Түстер мен жұптарды есте сақтау</p>
+                </div>
+                <div class="menu-card" onclick="showScreen('screen-reaction-menu')">
+                    <span class="icon">⚡</span>
+                    <h3>Реакция ойындары</h3>
+                    <p>Жылдамдық пен назарды тексеру</p>
+                </div>
+                <div class="menu-card" onclick="showScreen('screen-math')">
+                    <span class="icon">🔢</span>
+                    <h3>Есептер ойыны</h3>
+                    <p>Қарапайым математикалық есептер</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMORY SUBMENU -->
+        <div id="screen-memory-menu" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-main')">← Артқа</button>
+            <div class="header">
+                <h1>🧩 Жады ойындары</h1>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-card" onclick="startMemory1()">
+                    <span class="icon">🎨</span>
+                    <h3>Түстерді есте сақта</h3>
+                    <p>Көрсетілген түстер тізбегін қайталаңыз</p>
+                </div>
+                <div class="menu-card" onclick="startMemory2()">
+                    <span class="icon">🍎</span>
+                    <h3>Жұптарды тап</h3>
+                    <p>Бірдей жемістердің жұптарын табыңыз</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- REACTION SUBMENU -->
+        <div id="screen-reaction-menu" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-main')">← Артқа</button>
+            <div class="header">
+                <h1>⚡ Реакция ойындары</h1>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-card" onclick="startReaction1()">
+                    <span class="icon">⏱️</span>
+                    <h3>Жылдамдыққа басу</h3>
+                    <p>Жасыл түске дейін күтіп, тез басыңыз</p>
+                </div>
+                <div class="menu-card" onclick="startReaction2()">
+                    <span class="icon">🎯</span>
+                    <h3>Батырманы ұста!</h3>
+                    <p>Қозғалатын батырманы басып, ұпай жинаңыз</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMORY 1: Colors -->
+        <div id="screen-memory1" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-memory-menu')">← Артқа</button>
+            <div class="game-card">
+                <div class="game-title">Түстерді есте сақта</div>
+                <div class="score-display">Ұпай: <span id="m1-score">0</span></div>
+                <div class="color-seq" id="m1-seq">Старт батырмасын басыңыз</div>
+                <div class="feedback" id="m1-feedback"></div>
+                <div class="color-btns" id="m1-btns" style="display:none;">
+                    <button class="color-btn red" onclick="m1Pick('Қызыл')">Қызыл</button>
+                    <button class="color-btn blue" onclick="m1Pick('Көк')">Көк</button>
+                    <button class="color-btn green" onclick="m1Pick('Жасыл')">Жасыл</button>
+                    <button class="color-btn yellow" onclick="m1Pick('Сары')">Сары</button>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary" id="m1-start" onclick="m1Start()">Старт</button>
+                    <button class="btn btn-success hidden" id="m1-check" onclick="m1Check()">Жауапты жіберу</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMORY 2: Matching -->
+        <div id="screen-memory2" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-memory-menu')">← Артқа</button>
+            <div class="game-card" style="max-width:480px;">
+                <div class="game-title">Жұптарды тап</div>
+                <div class="score-display">Ұпай: <span id="m2-score">0</span></div>
+                <div class="memory-grid" id="m2-grid"></div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="m2Restart()">Қайта бастау</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- REACTION 1 -->
+        <div id="screen-reaction1" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-reaction-menu')">← Артқа</button>
+            <div class="game-card">
+                <div class="game-title">Реакция тесті</div>
+                <div class="reaction-area">
+                    <div class="reaction-info" id="r1-info">Бастау үшін төмендегі батырманы басыңыз</div>
+                    <button class="reaction-btn idle" id="r1-btn" onclick="r1Click()">Старт</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- REACTION 2: Clicker -->
+        <div id="screen-reaction2" class="screen">
+            <button class="btn btn-back" onclick="r2Stop(); showScreen('screen-reaction-menu')">← Артқа</button>
+            <div class="game-card" style="max-width:560px;">
+                <div class="game-title">Батырманы ұста!</div>
+                <div class="score-display">Ұпай: <span id="r2-score">0</span> / Мақсат: <span id="r2-target">10</span></div>
+                
+                <div id="r2-setup" class="clicker-setup">
+                    <p style="color:var(--text-muted);">Қанша ұпайға дейін ойнаймыз?</p>
+                    <input type="number" id="r2-input" value="10" min="1" max="100">
+                    <br>
+                    <button class="btn btn-success" onclick="r2Start()">Ойынды бастау</button>
+                </div>
+
+                <div class="clicker-area" id="r2-area">
+                    <button class="clicker-btn" id="r2-btn" onclick="r2Click()">БАС!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MATH -->
+        <div id="screen-math" class="screen">
+            <button class="btn btn-back" onclick="showScreen('screen-main')">← Артқа</button>
+            <div class="game-card">
+                <div class="game-title">Есепті шығар!</div>
+                <div class="score-display">Ұпай: <span id="math-score">0</span></div>
+                <div class="math-primer" id="math-primer">?</div>
+                <div class="math-result" id="math-result"></div>
+                <input type="number" class="math-input" id="math-input" placeholder="?" autofocus>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="mathCheck()">Тексеру</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3 id="modal-title">Жеңіс!</h3>
+            <p id="modal-text"></p>
+            <div class="actions">
+                <button class="btn btn-primary" id="modal-yes" onclick="modalYes()">Иә</button>
+                <button class="btn btn-secondary" id="modal-no" onclick="modalNo()">Жоқ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== NAVIGATION =====
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ===== MODAL =====
+        let modalCallbackYes = null;
+        let modalCallbackNo = null;
+
+        function showModal(title, text, yesText, noText, onYes, onNo) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-text').textContent = text;
+            document.getElementById('modal-yes').textContent = yesText || 'Иә';
+            document.getElementById('modal-no').textContent = noText || 'Жоқ';
+            document.getElementById('modal-no').style.display = onNo ? 'inline-flex' : 'none';
+            modalCallbackYes = onYes;
+            modalCallbackNo = onNo;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function modalYes() {
+            document.getElementById('modal').classList.remove('show');
+            if (modalCallbackYes) modalCallbackYes();
+        }
+
+        function modalNo() {
+            document.getElementById('modal').classList.remove('show');
+            if (modalCallbackNo) modalCallbackNo();
+        }
+
+        // ===== MEMORY 1: Colors =====
+        const COLORS = ['Қызыл', 'Көк', 'Жасыл', 'Сары'];
+        const COLOR_CLASS = { 'Қызыл': 'chip-red', 'Көк': 'chip-blue', 'Жасыл': 'chip-green', 'Сары': 'chip-yellow' };
+
+        let m1Seq = [];
+        let m1User = [];
+        let m1Score = 0;
+        let m1Showing = false;
+
+        function startMemory1() {
+            showScreen('screen-memory1');
+            m1Reset();
+        }
+
+        function m1Reset() {
+            m1Seq = [];
+            m1User = [];
+            m1Score = 0;
+            m1Showing = false;
+            document.getElementById('m1-score').textContent = '0';
+            document.getElementById('m1-seq').textContent = 'Старт батырмасын басыңыз';
+            document.getElementById('m1-feedback').textContent = '';
+            document.getElementById('m1-feedback').className = 'feedback';
+            document.getElementById('m1-btns').style.display = 'none';
+            document.getElementById('m1-start').classList.remove('hidden');
+            document.getElementById('m1-check').classList.add('hidden');
+        }
+
+        function m1Start() {
+            m1Seq = [];
+            m1Score = 0;
+            document.getElementById('m1-score').textContent = '0';
+            document.getElementById('m1-start').classList.add('hidden');
+            m1NextRound();
+        }
+
+        function m1NextRound() {
+            if (m1Seq.length === 3) {
+                showModal(
+                    'Жеңіс!',
+                    'Сіз жеңдіңіз! Мәзірге шығуды қалайсыз ба?',
+                    'Мәзірге',
+                    'Қайта бастау',
+                    () => showScreen('screen-memory-menu'),
+                    () => m1Start()
+                );
+                return;
+            }
+
+            m1Seq.push(COLORS[Math.floor(Math.random() * COLORS.length)]);
+            m1User = [];
+            m1Showing = true;
+
+            const seqEl = document.getElementById('m1-seq');
+            seqEl.innerHTML = m1Seq.map(c => `<span class="color-chip ${COLOR_CLASS[c]}">${c}</span>`).join('');
+            document.getElementById('m1-feedback').textContent = '';
+            document.getElementById('m1-btns').style.display = 'none';
+            document.getElementById('m1-check').classList.add('hidden');
+
+            setTimeout(() => {
+                seqEl.textContent = 'Енді есте сақтаған түстерді таңдаңыз!';
+                m1Showing = false;
+                document.getElementById('m1-btns').style.display = 'grid';
+                document.getElementById('m1-check').classList.remove('hidden');
+            }, 2500);
+        }
+
+        function m1Pick(color) {
+            if (m1Showing) return;
+            m1User.push(color);
+            // visual feedback
+            const seqEl = document.getElementById('m1-seq');
+            seqEl.innerHTML = m1User.map(c => `<span class="color-chip ${COLOR_CLASS[c]}">${c}</span>`).join('');
+        }
+
+        function m1Check() {
+            if (m1Showing || m1User.length === 0) return;
+
+            const ok = m1User.length === m1Seq.length && m1User.every((c, i) => c === m1Seq[i]);
+            const fb = document.getElementById('m1-feedback');
+
+            if (ok) {
+                m1Score++;
+                document.getElementById('m1-score').textContent = m1Score;
+                fb.textContent = 'Дұрыс! 👍';
+                fb.className = 'feedback ok';
+                document.getElementById('m1-btns').style.display = 'none';
+                document.getElementById('m1-check').classList.add('hidden');
+                setTimeout(m1NextRound, 1000);
+            } else {
+                fb.innerHTML = `Қате! Дұрысы: ${m1Seq.map(c => `<span class="color-chip ${COLOR_CLASS[c]}">${c}</span>`).join(' ')}`;
+                fb.className = 'feedback err';
+                document.getElementById('m1-btns').style.display = 'none';
+                document.getElementById('m1-check').classList.add('hidden');
+                document.getElementById('m1-start').classList.remove('hidden');
+                document.getElementById('m1-start').textContent = 'Қайта бастау';
+            }
+        }
+
+        // ===== MEMORY 2: Matching =====
+        const SYMBOLS = ['🍎', '🍌', '🍇', '🍒', '🥝', '🍍', '🥑', '🍉'];
+        let m2Cards = [];
+        let m2State = { first: null, second: null, lock: false, score: 0, matched: 0 };
+
+        function startMemory2() {
+            showScreen('screen-memory2');
+            m2Restart();
+        }
+
+        function m2Restart() {
+            m2State = { first: null, second: null, lock: false, score: 0, matched: 0 };
+            document.getElementById('m2-score').textContent = '0';
+            m2Cards = [...SYMBOLS, ...SYMBOLS];
+            // shuffle
+            for (let i = m2Cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [m2Cards[i], m2Cards[j]] = [m2Cards[j], m2Cards[i]];
+            }
+
+            const grid = document.getElementById('m2-grid');
+            grid.innerHTML = '';
+            m2Cards.forEach((sym, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'mem-card';
+                btn.textContent = '?';
+                btn.dataset.index = i;
+                btn.onclick = () => m2Click(i);
+                grid.appendChild(btn);
+            });
+        }
+
+        function m2Click(index) {
+            if (m2State.lock) return;
+            const btns = document.querySelectorAll('#m2-grid .mem-card');
+            const btn = btns[index];
+            if (btn.classList.contains('flipped') || btn.classList.contains('matched')) return;
+
+            btn.textContent = m2Cards[index];
+            btn.classList.add('flipped');
+
+            if (m2State.first === null) {
+                m2State.first = index;
+            } else if (m2State.second === null) {
+                m2State.second = index;
+                m2State.lock = true;
+                setTimeout(m2Check, 800);
+            }
+        }
+
+        function m2Check() {
+            const btns = document.querySelectorAll('#m2-grid .mem-card');
+            const f = m2State.first;
+            const s = m2State.second;
+
+            if (m2Cards[f] === m2Cards[s]) {
+                btns[f].classList.add('matched');
+                btns[s].classList.add('matched');
+                btns[f].classList.remove('flipped');
+                btns[s].classList.remove('flipped');
+                m2State.score += 10;
+                m2State.matched++;
+                document.getElementById('m2-score').textContent = m2State.score;
+
+                if (m2State.matched === 8) {
+                    setTimeout(() => {
+                        showModal(
+                            'Жеңіс!',
+                            `Сіз барлық жұптарды таптыңыз!\nСіздің ұпайларыңыз: ${m2State.score}`,
+                            'Қайта ойнау',
+                            null,
+                            () => m2Restart(),
+                            null
+                        );
+                    }, 400);
+                }
+            } else {
+                btns[f].textContent = '?';
+                btns[s].textContent = '?';
+                btns[f].classList.remove('flipped');
+                btns[s].classList.remove('flipped');
+                m2State.score = Math.max(0, m2State.score - 2);
+                document.getElementById('m2-score').textContent = m2State.score;
+            }
+
+            m2State.first = null;
+            m2State.second = null;
+            m2State.lock = false;
+        }
+
+        //REACTION 1
+        let r1State = 'idle';
+        let r1StartTime = 0;
+        let r1Timer = null;
+
+        function startReaction1() {
+            showScreen('screen-reaction1');
+            r1Reset();
+        }
+
+        function r1Reset() {
+            r1State = 'idle';
+            if (r1Timer) clearTimeout(r1Timer);
+            const btn = document.getElementById('r1-btn');
+            btn.className = 'reaction-btn idle';
+            btn.textContent = 'Старт';
+            document.getElementById('r1-info').textContent = 'Бастау үшін төмендегі батырманы басыңыз';
+        }
+
+        function r1Click() {
+            const btn = document.getElementById('r1-btn');
+            const info = document.getElementById('r1-info');
+
+            if (r1State === 'idle') {
+                r1State = 'waiting';
+                btn.className = 'reaction-btn waiting';
+                btn.textContent = 'Күт...';
+                info.textContent = 'Дайындал...';
+                const delay = 2000 + Math.random() * 3000;
+                r1Timer = setTimeout(() => {
+                    if (r1State === 'waiting') {
+                        r1State = 'active';
+                        btn.className = 'reaction-btn active';
+                        btn.textContent = 'БАСҚЫШТЫ БАС!!!';
+                        r1StartTime = performance.now();
+                    }
+                }, delay);
+            } else if (r1State === 'waiting') {
+                // early click — penalty
+                r1State = 'penalty';
+                if (r1Timer) clearTimeout(r1Timer);
+                btn.className = 'reaction-btn penalty';
+                btn.textContent = 'ЖАЗАЛАУ!';
+                info.textContent = 'Асықпаңыз!';
+                setTimeout(() => {
+                    r1State = 'waiting';
+                    btn.className = 'reaction-btn waiting';
+                    btn.textContent = 'Күт...';
+                    info.textContent = 'Назар аударыңыз... Тағы да асықпаңыз!';
+                    const delay = 1500 + Math.random() * 2500;
+                    r1Timer = setTimeout(() => {
+                        if (r1State === 'waiting') {
+                            r1State = 'active';
+                            btn.className = 'reaction-btn active';
+                            btn.textContent = 'БАСҚЫШТЫ БАС!!!';
+                            r1StartTime = performance.now();
+                        }
+                    }, delay);
+                }, 1000);
+            } else if (r1State === 'active') {
+                const ms = Math.round(performance.now() - r1StartTime);
+                info.textContent = `Сіздің нәтижеңіз: ${ms} мс!`;
+                r1State = 'idle';
+                btn.className = 'reaction-btn idle';
+                btn.textContent = 'Старт';
+            }
+        }
+
+        //REACTION 2: Clicker
+        let r2Score = 0;
+        let r2Target = 10;
+        let r2Active = false;
+        let r2Clicked = false;
+        let r2Timer = null;
+
+        function startReaction2() {
+            showScreen('screen-reaction2');
+            r2Stop();
+            document.getElementById('r2-setup').classList.remove('hidden');
+            document.getElementById('r2-area').style.display = 'none';
+            document.getElementById('r2-score').textContent = '0';
+            document.getElementById('r2-target').textContent = '10';
+        }
+
+        function r2Stop() {
+            r2Active = false;
+            if (r2Timer) {
+                clearTimeout(r2Timer);
+                r2Timer = null;
+            }
+            const btn = document.getElementById('r2-btn');
+            btn.style.display = 'none';
+        }
+
+        function r2Start() {
+            const input = document.getElementById('r2-input');
+            const val = parseInt(input.value, 10);
+            if (isNaN(val) || val <= 0) {
+                showModal('Қате', '0-ден үлкен бүтін сан енгізіңіз!', 'OK', null, () => {}, null);
+                return;
+            }
+
+            r2Target = val;
+            r2Score = 0;
+            r2Active = true;
+            r2Clicked = true;
+
+            document.getElementById('r2-target').textContent = r2Target;
+            document.getElementById('r2-score').textContent = '0';
+            document.getElementById('r2-setup').classList.add('hidden');
+            document.getElementById('r2-area').style.display = 'block';
+
+            r2Move();
+        }
+
+        function r2Move() {
+            if (r2Timer) {
+                clearTimeout(r2Timer);
+                r2Timer = null;
+            }
+            if (!r2Active) return;
+
+            if (!r2Clicked) {
+                r2Score = Math.max(0, r2Score - 1);
+                document.getElementById('r2-score').textContent = r2Score;
+            }
+
+            if (r2Score >= r2Target) {
+                r2Active = false;
+                document.getElementById('r2-btn').style.display = 'none';
+                showModal(
+                    'Жеңіс!',
+                    `Тамаша! Сіз ${r2Score} ұпай жинадыңыз!`,
+                    'Қайта ойнау',
+                    'Мәзірге',
+                    () => {
+                        document.getElementById('r2-setup').classList.remove('hidden');
+                        document.getElementById('r2-area').style.display = 'none';
+                    },
+                    () => showScreen('screen-reaction-menu')
+                );
+                return;
+            }
+
+            r2Clicked = false;
+            const area = document.getElementById('r2-area');
+            const btn = document.getElementById('r2-btn');
+            const maxX = area.clientWidth - 70;
+            const maxY = area.clientHeight - 70;
+
+            btn.style.left = Math.max(0, Math.random() * maxX) + 'px';
+            btn.style.top = Math.max(0, Math.random() * maxY) + 'px';
+            btn.style.display = 'block';
+
+            r2Timer = setTimeout(r2Move, 1000);
+        }
+
+        function r2Click() {
+            if (!r2Active || r2Clicked) return;
+            r2Clicked = true;
+            r2Score++;
+            document.getElementById('r2-score').textContent = r2Score;
+            r2Move();
+        }
+
+        // ===== MATH =====
+        let mathAnswer = 0;
+        let mathScore = 0;
+
+        function mathGenerate() {
+            const n1 = Math.floor(Math.random() * 11);
+            const n2 = Math.floor(Math.random() * 11);
+            const n3 = Math.floor(Math.random() * 11);
+            const op1 = Math.random() < 0.5 ? '+' : '-';
+            const op2 = Math.random() < 0.5 ? '+' : '-';
+            const expr = `${n1} ${op1} ${n2} ${op2} ${n3}`;
+            mathAnswer = eval(expr);
+            document.getElementById('math-primer').textContent = expr + ' = ?';
+            document.getElementById('math-input').value = '';
+            document.getElementById('math-result').textContent = '';
+            document.getElementById('math-input').focus();
+        }
+
+        function mathCheck() {
+            const input = document.getElementById('math-input');
+            const result = document.getElementById('math-result');
+            const val = parseInt(input.value, 10);
+
+            if (isNaN(val)) {
+                result.textContent = 'Сан енгізіңіз!';
+                result.style.color = '#f59e0b';
+                return;
+            }
+
+            if (val === mathAnswer) {
+                mathScore++;
+                document.getElementById('math-score').textContent = mathScore;
+                result.textContent = 'Дұрыс!';
+                result.style.color = '#22c55e';
+                setTimeout(mathGenerate, 900);
+            } else {
+                result.textContent = `Қате! Дұрысы: ${mathAnswer}`;
+                result.style.color = '#ef4444';
+                setTimeout(mathGenerate, 1400);
+            }
+        }
+
+        // Enter key for math
+        document.getElementById('math-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') mathCheck();
+        });
+
+        // Init math when screen shown
+        const mathScreen = document.getElementById('screen-math');
+        const observer = new MutationObserver(() => {
+            if (mathScreen.classList.contains('active')) {
+                mathScore = 0;
+                document.getElementById('math-score').textContent = '0';
+                mathGenerate();
+            }
+        });
+        observer.observe(mathScreen, { attributes: true, attributeFilter: ['class'] });
+    </script>
+</body>
+</html>
